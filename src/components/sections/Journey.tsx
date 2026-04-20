@@ -79,7 +79,7 @@ const JOURNEY_CSS = `
 
     /* Sticky panel vertical: copy arriba, canvas abajo */
     .j-stage-sticky {
-      position:sticky; top:0; height:100dvh;
+      position:sticky; top:0; height:100vh; height:100svh;
       display:grid; grid-template-columns:1fr;
       grid-template-rows:auto 1fr;
       padding:68px 20px 16px;
@@ -181,6 +181,25 @@ const JOURNEY_CSS = `
     .j-extractions { grid-template-columns:1fr 1fr; }
     .j-finale { grid-template-columns:auto 1fr; }
     .j-book { width:130px; height:178px; }
+  }
+
+  /* ===== MOBILE (≤768px): recorrido más corto y canvas completo ===== */
+  @media(max-width:768px) {
+    .j-stage       { height:300vh; }
+    .j-stage.short { height:220vh; }
+    .j-stage.tall  { height:340vh; }
+
+    .j-stage-sticky {
+      height:100vh;
+      height:100svh;
+      padding:60px 16px 12px;
+      gap:8px;
+    }
+
+    .j-copy h2 { font-size:clamp(18px,5.6vw,23px); margin-bottom:6px; }
+    .j-copy p { font-size:12.8px; line-height:1.45; }
+    .j-canvas { height:100%; min-height:0; }
+    .j-canvas-body { padding:10px 12px; }
   }
 
   /* ===== TELÉFONOS PEQUEÑOS (≤390px) ===== */
@@ -569,6 +588,14 @@ export function Journey() {
     }
 
     const stages = Array.from(document.querySelectorAll("[data-stage]"));
+    const stageByNumber = stages.reduce<Map<number, Element>>((map, stage) => {
+      const stageNumber = parseInt(
+        (stage as HTMLElement).dataset.stage || "0",
+        10
+      );
+      if (stageNumber > 0) map.set(stageNumber, stage);
+      return map;
+    }, new Map());
 
     // Stage 1
     const doc1 = document.getElementById("doc1");
@@ -737,7 +764,7 @@ export function Journey() {
       setRail(activeStage);
 
       for (let n = 1; n <= 6; n++) {
-        const stage = document.querySelector(`.j-stage[data-stage="${n}"]`);
+        const stage = stageByNumber.get(n);
         if (!stage) continue;
         const p = getStageProgress(stage);
         if (n === 1) updateStage1(p);
@@ -749,24 +776,38 @@ export function Journey() {
       }
     }
 
+    const MOBILE_MAX_WIDTH = 768;
+    const MOBILE_SCROLL_THROTTLE = 90;
+    let isMobile = window.matchMedia(`(max-width:${MOBILE_MAX_WIDTH}px)`).matches;
     let ticking = false;
+    let lastMobileTick = 0;
+
+    function handleResize() {
+      isMobile = window.matchMedia(`(max-width:${MOBILE_MAX_WIDTH}px)`).matches;
+      onScroll();
+    }
+
     function handleScroll() {
+      const now = performance.now();
+      if (isMobile && now - lastMobileTick < MOBILE_SCROLL_THROTTLE) return;
+
       if (!ticking) {
         requestAnimationFrame(() => {
           onScroll();
+          if (isMobile) lastMobileTick = performance.now();
           ticking = false;
         });
         ticking = true;
       }
     }
 
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
     onScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 

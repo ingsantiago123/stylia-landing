@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { GradientBlur } from "@/components/backgrounds/GradientBlur";
 import { ParticleTextEffect } from "@/components/backgrounds/ParticleTextEffect";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
@@ -9,13 +10,34 @@ import { BlurFade } from "@/components/ui/blur-fade";
 import { APP_URL } from "@/lib/utils";
 
 export function Hero() {
+  const [enableParticles, setEnableParticles] = useState(true);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      "(max-width: 768px), (prefers-reduced-motion: reduce)"
+    );
+
+    const updateParticles = () => {
+      setEnableParticles(!mediaQuery.matches);
+    };
+
+    updateParticles();
+    mediaQuery.addEventListener("change", updateParticles);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateParticles);
+    };
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Backgrounds: ParticleTextEffect (21st.dev) + GradientBlur */}
-      <ParticleTextEffect
-        words={["STYLIA", "CORRIGE", "EDITA", "ESTILO", "FLUYE"]}
-        opacity={0.28}
-      />
+      {enableParticles && (
+        <ParticleTextEffect
+          words={["STYLIA", "CORRIGE", "EDITA", "ESTILO", "FLUYE"]}
+          opacity={0.28}
+        />
+      )}
       <GradientBlur variant="hero" />
 
       <div className="container-landing relative z-10 text-center max-w-5xl py-20">
