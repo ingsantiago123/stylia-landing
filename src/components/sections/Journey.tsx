@@ -114,6 +114,13 @@ const JOURNEY_CSS = `
     display:flex; align-items:center; gap:10px;
     padding:12px 16px; border-bottom:1px solid var(--border);
     font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--plomo);
+    position:relative; overflow:hidden;
+  }
+  .j-upload-progress {
+    position:absolute; bottom:0; left:0; height:2px;
+    background:var(--krypton); width:0%;
+    box-shadow:0 0 8px var(--krypton-glow);
+    transition:width .12s linear;
   }
   .j-canvas-bar .dots { display:flex; gap:6px; }
   .j-canvas-bar .dots i { width:9px; height:9px; border-radius:50%; background:var(--carbon-400); }
@@ -127,6 +134,7 @@ const JOURNEY_CSS = `
   @keyframes j-bounce { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(6px); } }
   @keyframes j-scan { to{ background:var(--krypton); } }
   @keyframes j-btnpulse { 50%{ box-shadow:0 0 0 6px rgba(212,255,0,0.15); } }
+  @keyframes j-hintbounce { 0%,100%{ opacity:0.5; transform:translateY(-3px); } 50%{ opacity:1; transform:translateY(3px); } }
 
   /* ===== STAGE 1 · UPLOAD ===== */
   .j-doc-float {
@@ -313,8 +321,18 @@ const JOURNEY_CSS = `
     background:var(--carbon); border:1px solid var(--border);
     color:var(--plomo); letter-spacing:0.1em; text-transform:uppercase;
   }
-  .j-ins { background:rgba(123,228,149,0.18); color:#C3F4D0; padding:1px 5px; border-radius:3px; font-weight:500; }
-  .j-del { background:rgba(255,122,122,0.14); color:#FFA8A8; text-decoration:line-through; padding:1px 4px; border-radius:3px; margin-right:2px; }
+  .j-del {
+    padding:1px 4px; border-radius:3px; margin-right:2px;
+    background:transparent; color:inherit; text-decoration:none;
+    transition:background .35s, color .35s;
+  }
+  .j-del.marked { background:rgba(255,122,122,0.14); color:#FFA8A8; text-decoration:line-through; }
+  .j-ins {
+    padding:1px 5px; border-radius:3px; font-weight:inherit;
+    background:transparent; color:inherit;
+    transition:background .35s, color .35s, font-weight .2s;
+  }
+  .j-ins.shown { background:rgba(123,228,149,0.18); color:#C3F4D0; font-weight:500; }
   .j-review-actions {
     display:flex; gap:10px; align-items:center;
     margin-top:auto; padding-top:12px; border-top:1px solid var(--border);
@@ -433,9 +451,11 @@ const JOURNEY_CSS = `
 
     .j-copy { max-width:100%; flex-shrink:0; width:100%; }
     .j-stage-eyebrow { font-size:10px; letter-spacing:0.12em; margin-bottom:6px; }
-    .j-copy h2 { font-size:clamp(20px,5.5vw,26px); line-height:1.08; margin-bottom:0; letter-spacing:-0.018em; }
-    .j-copy p { display:none; }
-    .j-copy .kvs { display:none; }
+    .j-copy h2 { font-size:clamp(18px,5vw,24px); line-height:1.08; margin-bottom:6px; letter-spacing:-0.018em; }
+    .j-copy p { font-size:12px; line-height:1.5; margin:0 0 5px; }
+    .j-copy p + p { display:none; }
+    .j-copy .kvs { margin-top:8px; font-size:10px; gap:4px; }
+    .j-copy .kvs .k { min-width:78px; }
 
     .j-canvas { flex:1; min-height:0; overflow:hidden; width:100%; }
     .j-canvas-bar { padding:9px 13px; font-size:10.5px; }
@@ -500,17 +520,34 @@ const JOURNEY_CSS = `
     .j-outro h3 { font-size:clamp(24px,6.5vw,36px); }
     .j-outro p { font-size:14px; max-width:100%; }
     .j-btn-primary { padding:12px 18px; font-size:13px; }
+
+    /* Scroll hint — mobile only */
+    #j-scroll-hint {
+      position:fixed; bottom:26px; left:50%; transform:translateX(-50%);
+      z-index:60; display:flex; flex-direction:column; align-items:center; gap:5px;
+      font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em;
+      text-transform:uppercase; color:rgba(212,255,0,0.55);
+      opacity:0; transition:opacity .7s;
+      pointer-events:none;
+    }
+    .j-hint-chevron {
+      width:12px; height:12px;
+      border-right:1.5px solid currentColor;
+      border-bottom:1.5px solid currentColor;
+      animation:j-hintbounce 1.4s ease-in-out infinite;
+    }
   }
 
-  /* ===== TABLET (481–1100px): show first paragraph, larger book/metrics ===== */
+  /* ===== TABLET (481–1100px): more room, slightly larger type ===== */
   @media(min-width:481px) and (max-width:1100px) {
     .j-stage { height:320vh; }
     .j-stage.short { height:250vh; }
     .j-stage.tall { height:400vh; }
-    .j-stage-sticky { padding:72px 28px 16px; gap:14px; }
+    .j-stage-sticky { padding:72px 28px 16px; gap:12px; }
     .j-copy h2 { font-size:clamp(22px,4vw,30px); }
-    .j-copy p { display:block; font-size:14px; }
-    .j-copy p + p { display:none; }
+    .j-copy p { font-size:13px; line-height:1.55; }
+    .j-copy .kvs { font-size:11px; gap:5px; margin-top:10px; }
+    .j-copy .kvs .k { min-width:88px; }
     .j-extractions { grid-template-columns:1fr 1fr; }
     .j-book { width:120px; height:166px; padding:18px 13px; }
     .j-book .bt { font-size:13px; margin-bottom:12px; }
@@ -523,12 +560,15 @@ const JOURNEY_CSS = `
     .j-stage { height:260vh; }
     .j-stage.short { height:200vh; }
     .j-stage.tall { height:310vh; }
-    .j-stage-sticky { padding:62px 14px 12px; gap:8px; }
-    .j-copy h2 { font-size:clamp(18px,5.5vw,22px); }
+    .j-stage-sticky { padding:62px 14px 12px; gap:6px; }
+    .j-copy h2 { font-size:clamp(17px,5vw,20px); margin-bottom:4px; }
+    .j-copy p { font-size:11px; line-height:1.45; margin:0 0 4px; }
+    .j-copy .kvs { margin-top:6px; font-size:9.5px; gap:3px; }
+    .j-copy .kvs .k { min-width:66px; }
     .j-canvas-bar .file { display:none; }
     .j-extractions { grid-template-columns:1fr; }
 
-    /* Stage 4: hide verbose desc on smallest screens to prevent layer height overflow */
+    /* Stage 4: hide verbose desc on smallest screens */
     .edit-layer { padding:7px 9px; gap:8px; }
     .edit-layer .desc { display:none; }
     .edit-layer .title { font-size:11.5px; }
@@ -596,26 +636,49 @@ export function Journey() {
     // Stage 1
     const doc1 = document.getElementById("doc1");
     const beam = document.getElementById("beam");
-    const s1status = document.getElementById("s1status");
+    const s1status = document.getElementById("s1status") as HTMLElement | null;
     const s1pages = document.getElementById("s1pages");
     const s1size = document.getElementById("s1size");
+    const s1prog = document.getElementById("s1prog") as HTMLElement | null;
+    const docLines = doc1 ? Array.from(doc1.querySelectorAll(".line")) as HTMLElement[] : [];
 
     function updateStage1(p: number) {
-      if (!doc1 || !beam || !s1status || !s1pages || !s1size) return;
-      const float = -40 + p * 40;
-      doc1.style.setProperty("--float", float + "px");
-      if (p > 0.35) beam.classList.add("on");
-      else beam.classList.remove("on");
-      if (p > 0.55) {
-        s1status.style.transition = "opacity .4s";
-        s1status.style.opacity = "1";
-        s1pages.textContent = "312";
-        s1size.textContent = "2,4 MB";
-      } else {
+      if (!doc1 || !beam || !s1status) return;
+
+      // Float doc up
+      doc1.style.setProperty("--float", (-40 + p * 40) + "px");
+
+      // Upload progress bar fills 0→100% as p goes 0.05→0.5
+      const uploadPct = Math.max(0, Math.min(1, (p - 0.05) / 0.45));
+      if (s1prog) s1prog.style.width = uploadPct * 100 + "%";
+
+      // Doc lines brighten progressively as file uploads
+      docLines.forEach((line, i) => {
+        const threshold = 0.1 + (i / Math.max(1, docLines.length)) * 0.4;
+        line.style.background = p > threshold ? "rgba(212,255,0,0.35)" : "";
+        line.style.transition = "background .4s";
+      });
+
+      // Status text phases
+      if (p < 0.18) {
         s1status.style.opacity = "0";
-        s1pages.textContent = "—";
-        s1size.textContent = "—";
+      } else if (p < 0.5) {
+        s1status.style.opacity = "1";
+        const pct = Math.min(99, Math.floor(uploadPct * 100));
+        s1status.innerHTML = `<span class="d"></span> cargando ${pct}%`;
+        if (s1pages) s1pages.textContent = "—";
+        if (s1size) s1size.textContent = "—";
+      } else if (p < 0.62) {
+        s1status.innerHTML = `<span class="d"></span> procesando…`;
+      } else {
+        s1status.innerHTML = `<span class="d"></span> recibido`;
+        if (s1pages) s1pages.textContent = "312";
+        if (s1size) s1size.textContent = "2,4 MB";
       }
+
+      // Beam on during processing phase
+      if (p > 0.3 && p < 0.75) beam.classList.add("on");
+      else beam.classList.remove("on");
     }
 
     // Stage 2
@@ -645,6 +708,7 @@ export function Journey() {
     const sConf = document.getElementById("sConf");
     const spellErrs = Array.from(document.querySelectorAll(".j-spell-err"));
     const spellProts = Array.from(document.querySelectorAll(".j-spell-protected"));
+    const s3callout = document.querySelector(".j-callout") as HTMLElement | null;
 
     function revealStaggered(els: Element[], startT: number, p: number) {
       els.forEach((el, i) => {
@@ -659,6 +723,13 @@ export function Journey() {
       if (sErr) sErr.textContent = String(Math.floor(14 * Math.min(1, p / 0.6)));
       if (sProt) sProt.textContent = String(Math.floor(23 * Math.min(1, p / 0.75)));
       if (sConf) sConf.textContent = String(Math.floor(98 * Math.min(1, p / 0.9)));
+      // Callout slides in once most errors are marked
+      if (s3callout) {
+        const show = p > 0.68;
+        s3callout.style.opacity = show ? "1" : "0";
+        s3callout.style.transform = show ? "translateY(0)" : "translateY(8px)";
+        s3callout.style.transition = "opacity .5s, transform .5s";
+      }
     }
 
     // Stage 4
@@ -702,26 +773,55 @@ export function Journey() {
     }
 
     // Stage 5
-    const btnAccept = document.getElementById("btnAccept");
-    const revSug = document.getElementById("revSug");
+    const btnAccept = document.getElementById("btnAccept") as HTMLButtonElement | null;
+    const revOrig = document.getElementById("revOrig") as HTMLElement | null;
+    const revSug = document.getElementById("revSug") as HTMLElement | null;
+    const revChips = document.getElementById("revChips") as HTMLElement | null;
+    const delSpans = Array.from(document.querySelectorAll(".j-del")) as HTMLElement[];
+    const insSpans = Array.from(document.querySelectorAll(".j-ins")) as HTMLElement[];
     let acceptTriggered = false;
 
     function updateStage5(p: number) {
+      // Phase 1 (p 0.1→0.25): original paragraph fades in
+      if (revOrig) revOrig.style.opacity = String(Math.max(0, Math.min(1, (p - 0.1) / 0.15)));
+
+      // Phase 2 (p 0.25→0.5): del spans get struck through one by one
+      delSpans.forEach((span, i) => {
+        const t = 0.25 + (i / Math.max(1, delSpans.length)) * 0.25;
+        span.classList.toggle("marked", p > t);
+      });
+
+      // Phase 3 (p 0.42→0.57): suggested paragraph fades in
+      if (revSug) {
+        const sp = Math.max(0, Math.min(1, (p - 0.42) / 0.15));
+        revSug.style.opacity = String(sp);
+        revSug.style.transform = sp < 1 ? `translateY(${(1 - sp) * 10}px)` : "";
+      }
+
+      // Phase 4 (p 0.55→0.72): ins spans appear one by one
+      insSpans.forEach((span, i) => {
+        const t = 0.55 + (i / Math.max(1, insSpans.length)) * 0.17;
+        span.classList.toggle("shown", p > t);
+      });
+
+      // Phase 5 (p 0.7→0.82): explain chips fade in
+      if (revChips) {
+        const cp = Math.max(0, Math.min(1, (p - 0.7) / 0.12));
+        revChips.style.opacity = String(cp);
+        revChips.style.transform = cp < 1 ? `translateY(${(1 - cp) * 6}px)` : "";
+      }
+
+      // Phase 6 (p > 0.8): accept button triggers
       if (!btnAccept || !revSug) return;
-      if (p > 0.6 && !acceptTriggered) {
+      if (p > 0.8 && !acceptTriggered) {
         acceptTriggered = true;
         btnAccept.classList.remove("pulsing");
         btnAccept.style.background = "var(--ok)";
         btnAccept.style.borderColor = "var(--ok)";
         btnAccept.innerHTML =
           '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg> Aceptado';
-        revSug.style.transform = "scale(1.01)";
-        revSug.style.boxShadow =
-          "0 0 0 1px rgba(123,228,149,0.3), 0 0 32px rgba(123,228,149,0.08)";
-        setTimeout(() => {
-          if (revSug) revSug.style.transform = "";
-        }, 700);
-      } else if (p < 0.4 && acceptTriggered) {
+        revSug.style.boxShadow = "0 0 0 1px rgba(123,228,149,0.3), 0 0 32px rgba(123,228,149,0.08)";
+      } else if (p < 0.6 && acceptTriggered) {
         acceptTriggered = false;
         btnAccept.classList.add("pulsing");
         btnAccept.style.background = "";
@@ -748,6 +848,8 @@ export function Journey() {
       });
     }
 
+    const scrollHint = document.getElementById("j-scroll-hint") as HTMLElement | null;
+
     function onScroll() {
       const docEl = document.documentElement;
       const maxScroll = docEl.scrollHeight - window.innerHeight;
@@ -770,10 +872,12 @@ export function Journey() {
       }
       setRail(activeStage);
 
+      let showHint = false;
       for (let n = 1; n <= 6; n++) {
         const stage = stageByNumber.get(n);
         if (!stage) continue;
         const p = getStageProgress(stage);
+        if (p >= 0 && p < 0.06) { showHint = true; }
         if (n === 1) updateStage1(p);
         else if (n === 2) updateStage2(p);
         else if (n === 3) updateStage3(p);
@@ -781,6 +885,7 @@ export function Journey() {
         else if (n === 5) updateStage5(p);
         else if (n === 6) updateStage6(p);
       }
+      if (scrollHint) scrollHint.style.opacity = showHint ? "0.85" : "0";
     }
 
     let ticking = false;
@@ -893,6 +998,7 @@ export function Journey() {
                 >
                   <span className="d"></span> recibido
                 </span>
+                <div className="j-upload-progress" id="s1prog" />
               </div>
               <div
                 className="j-canvas-body"
@@ -1325,7 +1431,7 @@ export function Journey() {
                 </span>
               </div>
               <div className="j-review">
-                <div className="j-review-paragraph">
+                <div className="j-review-paragraph" id="revOrig" style={{ opacity: 0, transition: "opacity .5s" }}>
                   <span className="label">Original</span>
                   <span className="j-del">
                     Caminaba lentamente por la calle, cuando de repente
@@ -1338,7 +1444,7 @@ export function Journey() {
                   <span className="j-del">dijo</span> con voz{" "}
                   <span className="j-del">temblorosa</span>.
                 </div>
-                <div className="j-review-paragraph" id="revSug">
+                <div className="j-review-paragraph" id="revSug" style={{ opacity: 0, transform: "translateY(10px)", transition: "opacity .5s, transform .5s" }}>
                   <span className="label">Sugerido</span>
                   <span className="j-ins">Caminaba calle abajo</span> cuando{" "}
                   <span className="j-ins">oyó</span> pasos detrás. Se{" "}
@@ -1346,7 +1452,7 @@ export function Journey() {
                   <span className="j-ins">supo</span> que alguien lo seguía.
                   «¿Quién anda ahí?» <span className="j-ins">susurró</span>.
                 </div>
-                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "10px" }}>
+                <div id="revChips" style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "10px", opacity: 0, transition: "opacity .4s, transform .4s", transform: "translateY(6px)" }}>
                   <span className="j-explain-chip">
                     <span className="cat">léxico</span> · 3 adverbios -mente
                     consecutivos
@@ -1532,6 +1638,12 @@ export function Journey() {
           </div>
         </div>
       </section>
+
+      {/* Scroll hint — mobile only, JS controls opacity */}
+      <div id="j-scroll-hint" aria-hidden="true">
+        <div className="j-hint-chevron" />
+        <span>Scroll</span>
+      </div>
     </div>
   );
 }

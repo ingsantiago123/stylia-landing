@@ -13,9 +13,7 @@ export function Hero() {
   const [enableParticles, setEnableParticles] = useState(true);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(
-      "(max-width: 768px), (prefers-reduced-motion: reduce)"
-    );
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const updateParticles = () => {
       setEnableParticles(!mediaQuery.matches);
