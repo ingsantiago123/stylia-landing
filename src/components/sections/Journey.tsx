@@ -70,146 +70,6 @@ const JOURNEY_CSS = `
     gap:40px; padding:80px 80px;
     align-items:center;
   }
-  /* ===== MOBILE — scroll-driven igual que desktop ===== */
-  @media(max-width:1100px) {
-    /* Scroll-spacers para móvil: el dedo necesita más recorrido */
-    .j-stage       { height:480vh; }
-    .j-stage.short { height:330vh; }
-    .j-stage.tall  { height:620vh; }
-
-    /* Sticky panel vertical: copy arriba, canvas abajo */
-    .j-stage-sticky {
-      position:sticky; top:0; height:100vh; height:100svh;
-      display:grid; grid-template-columns:1fr;
-      grid-template-rows:auto 1fr;
-      padding:68px 20px 16px;
-      gap:12px; align-items:stretch; overflow:hidden;
-    }
-
-    /* Copy compacto — canvas necesita el espacio */
-    .j-copy { max-width:100%; }
-    .j-stage-eyebrow { font-size:10px; letter-spacing:0.12em; margin-bottom:8px; }
-    .j-copy h2 { font-size:clamp(19px,5.2vw,27px); line-height:1.08; letter-spacing:-0.02em; margin-bottom:8px; }
-    .j-copy p { font-size:13.5px; line-height:1.5; margin-bottom:0; }
-    .j-copy p + p { display:none; }
-    .j-copy .kvs { display:none; }
-
-    /* Canvas ocupa el row restante */
-    .j-canvas { height:100%; min-height:0; }
-    .j-canvas-bar { padding:9px 13px; font-size:10.5px; }
-    .j-canvas-bar .dots i { width:7px; height:7px; }
-    .j-canvas-body { padding:12px 14px; }
-
-    /* Stage 1 */
-    .j-doc-float { width:145px; height:185px; padding:15px 13px; top:46%; }
-    .j-file-meta { font-size:10.5px; bottom:18px; }
-    .j-file-meta .big { font-size:12.5px; }
-
-    /* Stage 2 */
-    .j-analysis { padding:14px; }
-    .j-pages-grid { grid-template-columns:repeat(12,1fr); gap:2px; margin-bottom:10px; }
-    .j-extractions { grid-template-columns:1fr; gap:7px; }
-    .extract-card { padding:8px 10px; }
-    .extract-card .lbl { font-size:8.5px; margin-bottom:4px; }
-    .extract-card .val { font-size:12px; }
-    .j-pill { font-size:9.5px; padding:2px 6px; }
-    .j-pill-row { gap:4px; margin-top:4px; }
-
-    /* Stage 3 */
-    .j-spell { padding:12px 14px; }
-    .j-spell-text { font-size:12.5px; line-height:1.6; }
-    .j-callout { font-size:10.5px; padding:7px 9px; margin-top:7px; gap:7px; }
-    .j-spell-stats { margin-top:9px; padding-top:9px; gap:4px; }
-    .j-spell-stat .n { font-size:17px; }
-    .j-spell-stat .l { font-size:9px; }
-
-    /* Stage 4 */
-    .j-editorial { padding:12px 14px; }
-    .j-edit-head { font-size:9px; margin-bottom:7px; }
-    .j-edit-layers { gap:6px; }
-    .edit-layer { padding:8px 10px; gap:8px; }
-    .edit-layer .icon { width:25px; height:25px; border-radius:5px; flex-shrink:0; }
-    .edit-layer .icon svg { width:13px; height:13px; }
-    .edit-layer .title { font-size:12px; margin-bottom:1px; }
-    .edit-layer .desc { font-size:10px; }
-    .edit-layer .count { font-size:11px; min-width:24px; }
-    .j-voice-quote { font-size:12.5px; padding:8px 10px; margin-top:7px; line-height:1.45; }
-    .j-voice-quote b { font-size:9.5px; margin-top:6px; }
-
-    /* Stage 5 */
-    .j-review { padding:10px 12px; }
-    .j-review-paragraph { padding:9px 11px; font-size:12px; line-height:1.55; margin-bottom:6px; }
-    .j-review-paragraph .label { font-size:8px; padding:1px 6px; }
-    .j-review-actions { flex-wrap:wrap; gap:6px; padding-top:7px; }
-    .j-btn-accept, .j-btn-reject { padding:6px 10px; font-size:10.5px; }
-    .j-review-meta { margin-left:0; font-size:9.5px; order:10; width:100%; }
-    .j-explain-chip { font-size:8.5px; padding:2px 5px; margin:0 1px; }
-
-    /* Stage 6 */
-    .j-finale { grid-template-columns:1fr; padding:14px; gap:12px; overflow:hidden; }
-    .j-book { width:100px; height:142px; padding:14px 11px; margin:0 auto; }
-    .j-book .bt { font-size:11.5px; margin-bottom:8px; }
-    .j-book .ba { font-size:7.5px; }
-    .j-book .bs { font-size:7px; bottom:10px; left:11px; }
-    .j-book-lines { margin-top:10px; }
-    .j-finale-metrics { grid-template-columns:1fr 1fr; gap:6px; }
-    .j-metric { padding:8px 9px; }
-    .j-metric .n { font-size:17px; }
-    .j-metric .u { font-size:10px; }
-    .j-metric .l { font-size:8.5px; margin-top:3px; }
-    .j-metric.wide { grid-column:span 2; }
-    .j-metric.wide .n { font-size:13px; flex-wrap:wrap; gap:4px; }
-
-    /* Outro */
-    .j-outro { min-height:65vh; padding:56px 20px; }
-    .j-outro h3 { font-size:clamp(24px,6.5vw,36px); }
-    .j-outro p { font-size:14.5px; max-width:100%; }
-    .j-btn-primary { padding:12px 18px; font-size:13.5px; }
-  }
-
-  /* ===== TABLET (481–1100px): mostrar más contenido ===== */
-  @media(min-width:481px) and (max-width:1100px) {
-    .j-stage       { height:540vh; }
-    .j-stage.short { height:370vh; }
-    .j-stage.tall  { height:690vh; }
-    .j-stage-sticky { padding:72px 32px 20px; gap:16px; }
-    .j-copy h2 { font-size:clamp(24px,3.8vw,34px); }
-    .j-copy p { font-size:14.5px; }
-    .j-copy p + p { display:block; font-size:13.5px; }
-    .j-copy .kvs { display:flex; font-size:11.5px; }
-    .j-copy .kvs .k { min-width:100px; }
-    .j-extractions { grid-template-columns:1fr 1fr; }
-    .j-finale { grid-template-columns:auto 1fr; }
-    .j-book { width:130px; height:178px; }
-  }
-
-  /* ===== MOBILE (≤768px): recorrido más corto y canvas completo ===== */
-  @media(max-width:768px) {
-    .j-stage       { height:300vh; }
-    .j-stage.short { height:220vh; }
-    .j-stage.tall  { height:340vh; }
-
-    .j-stage-sticky {
-      height:100vh;
-      height:100svh;
-      padding:60px 16px 12px;
-      gap:8px;
-    }
-
-    .j-copy h2 { font-size:clamp(18px,5.6vw,23px); margin-bottom:6px; }
-    .j-copy p { font-size:12.8px; line-height:1.45; }
-    .j-canvas { height:100%; min-height:0; }
-    .j-canvas-body { padding:10px 12px; }
-  }
-
-  /* ===== TELÉFONOS PEQUEÑOS (≤390px) ===== */
-  @media(max-width:390px) {
-    .j-stage-sticky { padding:62px 14px 12px; gap:8px; }
-    .j-copy h2 { font-size:clamp(16px,5.5vw,21px); }
-    .j-copy p { font-size:12.5px; }
-    .j-canvas-bar .file { display:none; }
-  }
-
   /* ===== COPY COLUMN ===== */
   .j-copy { max-width:460px; }
   .j-stage-eyebrow {
@@ -356,12 +216,24 @@ const JOURNEY_CSS = `
     font-family:'Georgia', serif; flex:1;
   }
   .j-spell-err {
-    position:relative; color:var(--bruma);
-    border-bottom:2px wavy var(--err); padding-bottom:1px;
+    position:relative; color:var(--bruma-muted);
+    border-bottom:2px solid transparent; padding-bottom:1px;
+    transition:color .35s ease, border-bottom-color .35s ease, background-color .35s ease;
+  }
+  .j-spell-err.revealed {
+    color:var(--bruma);
+    border-bottom:2px wavy var(--err);
+    background-color:rgba(255,122,122,0.07);
   }
   .j-spell-protected {
+    color:var(--bruma-muted); font-weight:500;
+    border-bottom:1.5px dotted transparent;
+    transition:color .35s ease, border-bottom-color .35s ease, font-weight .35s ease, background-color .35s ease;
+  }
+  .j-spell-protected.revealed {
     color:var(--krypton); font-weight:600;
-    border-bottom:1.5px dotted var(--krypton);
+    border-bottom-color:var(--krypton);
+    background-color:rgba(212,255,0,0.06);
   }
   .j-spell-stats {
     display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;
@@ -545,6 +417,130 @@ const JOURNEY_CSS = `
     transition:transform .15s, box-shadow .15s;
   }
   .j-btn-primary:hover { transform:translateY(-1px); box-shadow:0 0 0 1px rgba(212,255,0,0.5), 0 14px 40px rgba(212,255,0,0.3); }
+
+  /* ===== MOBILE ≤1100px: sticky panel, compact copy, canvas fills height ===== */
+  @media(max-width:1100px) {
+    .j-stage { height:280vh; }
+    .j-stage.short { height:220vh; }
+    .j-stage.tall { height:340vh; }
+
+    .j-stage-sticky {
+      position:sticky; top:0; height:100svh;
+      display:flex; flex-direction:column;
+      padding:68px 16px 14px; gap:10px;
+      overflow:hidden;
+    }
+
+    .j-copy { max-width:100%; flex-shrink:0; width:100%; }
+    .j-stage-eyebrow { font-size:10px; letter-spacing:0.12em; margin-bottom:6px; }
+    .j-copy h2 { font-size:clamp(20px,5.5vw,26px); line-height:1.08; margin-bottom:0; letter-spacing:-0.018em; }
+    .j-copy p { display:none; }
+    .j-copy .kvs { display:none; }
+
+    .j-canvas { flex:1; min-height:0; overflow:hidden; width:100%; }
+    .j-canvas-bar { padding:9px 13px; font-size:10.5px; }
+    .j-canvas-bar .dots i { width:7px; height:7px; }
+    .j-canvas-body { padding:14px 16px; }
+
+    .j-doc-float { width:140px; height:185px; padding:16px 12px; top:46%; }
+    .j-file-meta { font-size:10.5px; bottom:14px; }
+    .j-file-meta .big { font-size:12.5px; }
+
+    .j-analysis { padding:12px 14px; }
+    .j-pages-grid { grid-template-columns:repeat(12,1fr); gap:2px; margin-bottom:10px; }
+    .j-extractions { grid-template-columns:1fr 1fr; gap:7px; }
+    .extract-card { padding:8px 10px; }
+    .extract-card .lbl { font-size:8.5px; margin-bottom:3px; }
+    .extract-card .val { font-size:11px; line-height:1.4; overflow-wrap:break-word; word-break:break-word; }
+    .j-pill { font-size:9px; padding:2px 5px; }
+    .j-pill-row { gap:3px; margin-top:3px; }
+
+    .j-spell { padding:12px 14px; }
+    .j-spell-text { font-size:12.5px; line-height:1.65; overflow-wrap:break-word; word-break:normal; }
+    .j-callout { font-size:10px; padding:7px 9px; margin-top:8px; gap:7px; }
+    .j-spell-stats { margin-top:10px; padding-top:9px; gap:5px; }
+    .j-spell-stat .n { font-size:18px; }
+    .j-spell-stat .l { font-size:9px; }
+
+    .j-editorial { padding:12px 14px; }
+    .j-edit-head { font-size:9px; margin-bottom:8px; }
+    .j-edit-layers { gap:7px; }
+    .edit-layer { padding:9px 11px; gap:10px; }
+    .edit-layer .icon { width:28px; height:28px; border-radius:6px; flex-shrink:0; }
+    .edit-layer .icon svg { width:13px; height:13px; }
+    .edit-layer .title { font-size:12px; margin-bottom:1px; }
+    .edit-layer .desc { font-size:9.5px; line-height:1.25; color:var(--plomo); }
+    .edit-layer .count { font-size:11px; min-width:28px; flex-shrink:0; white-space:nowrap; }
+    .j-voice-quote { font-size:11.5px; padding:8px 10px; margin-top:8px; line-height:1.4; }
+    .j-voice-quote b { font-size:8.5px; margin-top:5px; }
+
+    .j-review { padding:10px 12px; }
+    .j-review-paragraph { padding:9px 11px; font-size:11.5px; line-height:1.55; margin-bottom:7px; }
+    .j-review-paragraph .label { font-size:7.5px; padding:1px 5px; }
+    .j-review-actions { flex-wrap:wrap; gap:5px; padding-top:8px; }
+    .j-btn-accept, .j-btn-reject { padding:5px 9px; font-size:10px; }
+    .j-review-meta { margin-left:0; font-size:9px; order:10; width:100%; }
+    .j-explain-chip { font-size:8px; padding:2px 5px; margin:0 1px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+    .j-finale { padding:14px; grid-template-columns:auto 1fr; gap:14px; overflow:hidden; align-items:center; perspective:600px; }
+    .j-book { width:100px; height:140px; padding:14px 11px; }
+    .j-book .bt { font-size:11px; margin-bottom:8px; }
+    .j-book .ba { font-size:7.5px; }
+    .j-book .bs { font-size:7px; bottom:10px; left:11px; }
+    .j-book-lines { margin-top:8px; }
+    .j-finale-metrics { grid-template-columns:1fr 1fr; gap:5px; }
+    .j-metric { padding:7px 9px; }
+    .j-metric .n { font-size:16px; }
+    .j-metric .u { font-size:9.5px; }
+    .j-metric .l { font-size:8px; margin-top:2px; }
+    .j-metric.wide { grid-column:span 2; }
+    .j-metric.wide .n { font-size:12px; flex-wrap:wrap; gap:3px; }
+
+    .j-outro { min-height:60vh; padding:56px 20px; }
+    .j-outro h3 { font-size:clamp(24px,6.5vw,36px); }
+    .j-outro p { font-size:14px; max-width:100%; }
+    .j-btn-primary { padding:12px 18px; font-size:13px; }
+  }
+
+  /* ===== TABLET (481–1100px): show first paragraph, larger book/metrics ===== */
+  @media(min-width:481px) and (max-width:1100px) {
+    .j-stage { height:320vh; }
+    .j-stage.short { height:250vh; }
+    .j-stage.tall { height:400vh; }
+    .j-stage-sticky { padding:72px 28px 16px; gap:14px; }
+    .j-copy h2 { font-size:clamp(22px,4vw,30px); }
+    .j-copy p { display:block; font-size:14px; }
+    .j-copy p + p { display:none; }
+    .j-extractions { grid-template-columns:1fr 1fr; }
+    .j-book { width:120px; height:166px; padding:18px 13px; }
+    .j-book .bt { font-size:13px; margin-bottom:12px; }
+    .j-metric .n { font-size:20px; }
+    .j-finale { grid-template-columns:auto 1fr; }
+  }
+
+  /* ===== PHONE (≤480px): tightest layout ===== */
+  @media(max-width:480px) {
+    .j-stage { height:260vh; }
+    .j-stage.short { height:200vh; }
+    .j-stage.tall { height:310vh; }
+    .j-stage-sticky { padding:62px 14px 12px; gap:8px; }
+    .j-copy h2 { font-size:clamp(18px,5.5vw,22px); }
+    .j-canvas-bar .file { display:none; }
+    .j-extractions { grid-template-columns:1fr; }
+
+    /* Stage 4: hide verbose desc on smallest screens to prevent layer height overflow */
+    .edit-layer { padding:7px 9px; gap:8px; }
+    .edit-layer .desc { display:none; }
+    .edit-layer .title { font-size:11.5px; }
+    .j-voice-quote { font-size:11px; }
+
+    /* Stage 5: chips truncate rather than wrap */
+    .j-explain-chip { font-size:7.5px; max-width:calc(50% - 4px); }
+
+    /* Stage 6: stack book above metrics on very small */
+    .j-finale { grid-template-columns:1fr; justify-items:center; }
+    .j-finale-metrics { grid-template-columns:1fr 1fr; width:100%; }
+  }
 `;
 
 export function Journey() {
@@ -647,8 +643,19 @@ export function Journey() {
     const sErr = document.getElementById("sErr");
     const sProt = document.getElementById("sProt");
     const sConf = document.getElementById("sConf");
+    const spellErrs = Array.from(document.querySelectorAll(".j-spell-err"));
+    const spellProts = Array.from(document.querySelectorAll(".j-spell-protected"));
+
+    function revealStaggered(els: Element[], startT: number, p: number) {
+      els.forEach((el, i) => {
+        const t = startT + (i / Math.max(1, els.length)) * 0.55;
+        el.classList.toggle("revealed", p > t);
+      });
+    }
 
     function updateStage3(p: number) {
+      revealStaggered(spellErrs, 0.08, p);
+      revealStaggered(spellProts, 0.15, p);
       if (sErr) sErr.textContent = String(Math.floor(14 * Math.min(1, p / 0.6)));
       if (sProt) sProt.textContent = String(Math.floor(23 * Math.min(1, p / 0.75)));
       if (sConf) sConf.textContent = String(Math.floor(98 * Math.min(1, p / 0.9)));
@@ -776,25 +783,12 @@ export function Journey() {
       }
     }
 
-    const MOBILE_MAX_WIDTH = 768;
-    const MOBILE_SCROLL_THROTTLE = 90;
-    let isMobile = window.matchMedia(`(max-width:${MOBILE_MAX_WIDTH}px)`).matches;
     let ticking = false;
-    let lastMobileTick = 0;
-
-    function handleResize() {
-      isMobile = window.matchMedia(`(max-width:${MOBILE_MAX_WIDTH}px)`).matches;
-      onScroll();
-    }
 
     function handleScroll() {
-      const now = performance.now();
-      if (isMobile && now - lastMobileTick < MOBILE_SCROLL_THROTTLE) return;
-
       if (!ticking) {
         requestAnimationFrame(() => {
           onScroll();
-          if (isMobile) lastMobileTick = performance.now();
           ticking = false;
         });
         ticking = true;
@@ -802,12 +796,12 @@ export function Journey() {
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", onScroll);
     onScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", onScroll);
     };
   }, []);
 
